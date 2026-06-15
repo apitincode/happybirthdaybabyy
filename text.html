@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Ciwa</title>
+    <style>
+        /* --- RESET & GLOBAL STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #30101e, #1a0812);
+            color: #f3e5f5;
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- ANIMASI GLOBAL --- */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); }
+        }
+
+        /* --- ANIMASI EFEK KETIK (HANYA BERJALAN 1 KALI) --- */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        @keyframes removeCursor {
+            to { border-color: transparent; }
+        }
+
+        /* --- 1. PRELOADER BLOCK (1000557323.jpg) --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a0812;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loader-flower {
+            font-size: 4rem;
+            animation: spin 3s linear infinite;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        .loader-text {
+            font-size: 1.1rem;
+            color: #b39ddb;
+            opacity: 0.8;
+            letter-spacing: 1px;
+            font-style: italic;
+        }
+
+        /* --- EFEK DAUN/BUNGA GUGUR BACKGROUND --- */
+        .falling-petal {
+            position: fixed;
+            top: -50px;
+            pointer-events: none;
+            animation: fall linear infinite;
+            z-index: 100;
+        }
+
+        /* --- FLOATING MUSIC FLOATER BUTTON --- */
+        .music-floater {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(240, 98, 146, 0.3);
+            border: 1px solid rgba(240, 98, 146, 0.6);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 999;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(240, 98, 146, 0.3);
+            font-size: 1.2rem;
+        }
+        .music-floater.playing {
+            animation: spin 4s linear infinite;
+        }
+
+        /* --- CONTAINER UTAMA --- */
+        .section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- 2. HERO SECTION (1000557324.jpg) --- */
+        .hero-section {
+            text-align: center;
+        }
+        .sub-badge {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: #e1bee7;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 300;
+            line-height: 1.2;
+            margin-bottom: 30px;
+        }
+        
+        /* WRAAPER & STYLE BARU UNTUK TEKS AYAYA */
+        .hero-title .animated-name-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+        }
+        .hero-title span.animated-name {
+            color: #ff80ab;
+            font-family: 'Brush Script MT', cursive, serif;
+            font-size: 4.5rem;
+            display: inline-block;
+            overflow: hidden;
+            border-right: 3px solid #ff80ab;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: 2px;
+            width: 0; /* Mulai dari lebar 0 agar efek ketik terlihat rapi */
+            
+            /* Animasi berjalan 1 kali (forwards menahan posisi akhir teks), kursor berkedip, lalu kursor hilang */
+            animation: 
+                typing 2s steps(10, end) 1.5s forwards,
+                blink .6s step-end infinite alternate,
+                removeCursor 0.1s linear 3.5s forwards;
+        }
+        .date-badge {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            color: #b39ddb;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+        .scroll-hint {
+            font-size: 0.85rem;
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+
+        /* --- 3. BOUQUET SECTION (1000557325.jpg) --- */
+        .bouquet-section h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            color: #e1bee7;
+        }
+        .bouquet-section p {
+            font-size: 1rem;
+            color: #b39ddb;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+        .bouquet-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 30px;
+        }
+        .vase-structure {
+            position: absolute;
+            bottom: 0;
+            width: 100px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+        }
+        .stem {
+            position: absolute;
+            bottom: 40px;
+            width: 4px;
+            background-color: #388e3c;
+            border-radius: 2px;
+            transform-origin: bottom center;
+        }
+        .stem-1 { transform: rotate(-30deg); height: 180px; }
+        .stem-2 { transform: rotate(-15deg); height: 190px; }
+        .stem-3 { transform: rotate(0deg); height: 200px; }
+        .stem-4 { transform: rotate(15deg); height: 190px; }
+        .stem-5 { transform: rotate(30deg); height: 180px; }
+        .vase {
+            position: absolute;
+            bottom: 0;
+            width: 90px;
+            height: 50px;
+            background: rgba(240, 98, 146, 0.4);
+            border-radius: 20px 20px 40px 40px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(240, 98, 146, 0.6);
+        }
+        .interactive-flower {
+            position: absolute;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+            animation: float 4s ease-in-out infinite;
+        }
+        .interactive-flower:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 8px #ff80ab);
+        }
+        .message-box {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        .message-text {
+            font-style: italic;
+            color: #f8bbd0;
+        }
+
+        /* --- 4. LETTER SECTION (1000557326.jpg) --- */
+        .letter-card {
+            width: 100%;
+            max-width: 450px;
+            background: #fff5f5;
+            color: #4a3b42;
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .letter-header {
+            text-align: center;
+            border-bottom: 1px solid #f1e4e8;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .letter-header .date {
+            font-size: 0.85rem;
+            color: #9c8891;
+            letter-spacing: 1px;
+        }
+        .letter-card h3 {
+            font-family: 'Georgia', serif;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: #2e1c24;
+        }
+        .letter-content p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        .letter-content p.ps {
+            font-style: italic;
+            background: #ffebee;
+            padding: 10px;
+            border-left: 3px solid #ff80ab;
+            margin-top: 25px;
+            font-size: 0.9rem;
+        }
+        .letter-footer {
+            text-align: right;
+            margin-top: 30px;
+            font-style: italic;
+            color: #6d5c64;
+        }
+
+        /* --- 5. MEMORIES SECTION (1000557327.jpg) --- */
+        .memories-section h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+        .memories-section p {
+            color: #b39ddb;
+            margin-bottom: 40px;
+            font-size: 0.95rem;
+        }
+        .gallery {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+        .polaroid {
+            background: white;
+            padding: 15px 15px 25px 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            width: 280px;
+        }
+        /* Rotasi miring acak estetis */
+        .polaroid:nth-child(1) { transform: rotate(-5deg); }
+        .polaroid:nth-child(2) { transform: rotate(4deg); }
+        .polaroid:nth-child(3) { transform: rotate(-3deg); }
+        
+        .polaroid:hover {
+            transform: scale(1.05) rotate(0deg);
+            z-index: 20;
+        }
+        .polaroid img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            border: 1px solid #eee;
+        }
+        .polaroid .caption {
+            color: #555;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* --- LIGHTBOX/POPUP PHOTO (1000557328.jpg) --- */
+        .lightbox {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(26, 8, 18, 0.95);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .lightbox-content {
+            background: white;
+            padding: 20px 20px 40px 20px;
+            max-width: 90%;
+            max-height: 80%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            text-align: center;
+        }
+        .lightbox img {
+            max-width: 100%;
+            max-height: 60vh;
+            object-fit: contain;
+        }
+        .lightbox .caption {
+            color: #333;
+            margin-top: 15px;
+            font-style: italic;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -40px; right: 0;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* --- 6. MUSIC PLAYER SECTION (1000557329.jpg) --- */
+        .player-card {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        /* Vinyl Player Area */
+        .vinyl-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 25px auto;
+            position: relative;
+        }
+        .vinyl {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #111, #333, #111);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .vinyl::before {
+            content: '';
+            position: absolute;
+            width: 95%; height: 95%;
+            border: 2px dashed rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        .vinyl-center {
+            width: 45px;
+            height: 45px;
+            background: #ff80ab;
+            border-radius: 50%;
+            border: 4px solid #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        .vinyl.playing {
+            animation: spin 4s linear infinite;
+        }
+        
+        .track-title { font-size: 1.3rem; margin-bottom: 5px; color: #f3e5f5; }
+        .track-artist { font-size: 0.9rem; color: #b39ddb; margin-bottom: 25px; }
+        
+        /* Progress Bar */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #b39ddb;
+            margin-bottom: 25px;
+            gap: 10px;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-current {
+            width: 0%;
+            height: 100%;
+            background: #ff80ab;
+            border-radius: 2px;
+            position: absolute;
+            top: 0; left: 0;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: none;
+            border: none;
+            color: #e1bee7;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .btn:hover { color: #ff80ab; }
+        .btn-play {
+            width: 55px; height: 55px;
+            background: rgba(240, 98, 146, 0.2);
+            border: 1px solid rgba(240, 98, 146, 0.4);
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 1.2rem;
+            color: #ff80ab;
+        }
+
+        /* Playlist */
+        .playlist {
+            text-align: left;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+        .playlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            transition: background 0.2s;
+        }
+        .playlist-item:hover, .playlist-item.active {
+            background: rgba(255,255,255,0.05);
+        }
+        .playlist-item.active .item-name { color: #ff80ab; }
+        .item-info { display: flex; flex-direction: column; }
+        .item-name { font-size: 0.95rem; color: #f3e5f5; }
+        .item-artist { font-size: 0.8rem; color: #b39ddb; }
+        .item-icon { font-size: 0.9rem; color: #b39ddb; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. PRELOADER BLOCK -->
+    <div id="preloader">
+        <span class="loader-flower">🌸</span>
+        <p class="loader-text">Preparing something special for you...</p>
+    </div>
+
+    <!-- AUDIO ELEMENT MURNI -->
+    <audio id="mainAudio" src=""></audio>
+
+    <!-- FLOATING MUSIC BUTTON -->
+    <div class="music-floater" id="floatingBtn">🎵</div>
+
+    <!-- 2. HERO SECTION -->
+    <section class="section hero-section">
+        <div class="sub-badge">🌸 Your Special Day 🌸</div>
+        <h1 class="hero-title">
+            Happy Birthday<br>
+            <!-- Dibungkus untuk mendukung efek ketik satu kali setelah preloader selesai -->
+            <div class="animated-name-wrapper">
+                <span class="animated-name">Ayaya</span>
+            </div>
+        </h1>
+        <div class="date-badge">July 5 • The Most Special Day</div>
+        
+        <p class="scroll-hint">Scroll down for your gifts </p>
+    </section>
+
+    <!-- 3. BOUQUET SECTION -->
+    <section class="section bouquet-section">
+        <div class="sub-badge">— My First Gift —</div>
+        <h2>A Digital Bouquet</h2>
+        <p>Each flower holds a little message just for you</p>
+
+        <div class="bouquet-container">
+            <div class="vase-structure">
+                <div class="stem stem-1"></div><div class="stem stem-2"></div><div class="stem stem-3"></div><div class="stem stem-4"></div><div class="stem stem-5"></div>
+                <div class="vase"></div>
+            </div>
+            <div class="interactive-flower" style="top: 5%; left: 45%; animation-delay: 0s;" data-msg="🌸 Sakura: Symbolizes beautiful beginnings. Every single moment spent with you is my favorite chapter.">🌸</div>
+<div class="interactive-flower" style="top: 20%; left: 22%; animation-delay: 0.5s;" data-msg="🌺 Hibiscus: Represents delicate charm. In my eyes, you always have your own unique way of being wonderful.">🌺</div>
+<div class="interactive-flower" style="top: 18%; left: 68%; animation-delay: 1s;" data-msg="🌷 Pink Tulip: Symbolizes perfect happiness. Thank you for being the beautiful reason behind my brightest smiles.">🌷</div>
+<div class="interactive-flower" style="top: 40%; left: 12%; animation-delay: 1.5s;" data-msg="🌼 Daisy: Symbolizes loyalty and pure love. I promise to always stay by your side through every season of life.">🌼</div>
+<div class="interactive-flower" style="top: 35%; left: 78%; animation-delay: 2s;" data-msg="🌹 Rose: Symbolizes deep, endless love. Happy birthday, Baby. My love for you grows bigger and warmer every day.">🌹</div>
+<div class="interactive-flower" style="top: 43%; left: 35%; animation-delay: 0.8s;" data-msg="🌻 Sunflower: Symbolizes warmth and adoration. Just like the sun, your presence always brightens up my darkest days.">🌻</div>
+<div class="interactive-flower" style="top: 45%; left: 56%; animation-delay: 2.3s;" data-msg="💐 Bouquet: Represents a bundle of blessings. May all your beautiful dreams and wishes come true in this new age.">💐</div>
+        </div>
+
+        <div class="message-box">
+            <p class="message-text" id="msgText">Touch each flower to reveal its message 💕</p>
+        </div>
+    </section>
+
+    <!-- 4. LETTER SECTION -->
+    <section class="section">
+        <div class="sub-badge">— My Second Gift —</div>
+        <div class="letter-card">
+            <div class="letter-header">
+                <h2>A Letter For You</h2>
+                <div class="date">June 10</div>
+            </div>
+          <div class="letter-content">
+                <h3>To My Dearest Babyy, 🌻</h3>
+                <p>On this beautiful day, a very special soul was brought into this world, and I feel like the luckiest person alive to have you in my life. Happy birthday, my favorite person.</p>
+                <p>Thank you for being the warmth on my coldest days, the laughter in my quiet moments, and the sweetest part of my everyday life. Your presence makes everything so much brighter, and the world is simply a better place just because you are in it.</p>
+                <p>As you step into this new chapter, I pray that your days are continuously filled with endless joy, gentle peace, and the kind of happiness you so casually give to everyone around you. Keep shining beautifully, Ayaya.</p>
+                <p class="ps">P.S. — No matter where life takes us, I will always be right here, cheering for you and loving you through it all. 🌸</p>
+            </div>
+            <div class="letter-footer">With all my love, ♡</div>
+        </div>
+    </section>
+
+    <!-- 5. MEMORIES SECTION -->
+    <section class="section memories-section">
+        <div class="sub-badge">— Our Story —</div>
+        <h2>Our Photo Memories</h2>
+        <p>Every picture holds a beautiful story</p>
+
+        <div class="gallery">
+            <div class="polaroid" data-img="img1.jpeg" data-cap="Our first date together 🌺">
+                <img src="img1.jpeg" alt="Sunset">
+                <div class="caption">Our first date together 🌺</div>
+            </div>
+            <div class="polaroid" data-img="img2.jpeg" data-cap="Our favourite date: blindbox collection 🌼">
+                <img src="img2.jpeg" alt="Cafe">
+                <div class="caption">Our favourite date: blindbox collection 🌼</div>
+            </div>
+            <div class="polaroid" data-img="img3.jpeg" data-cap="celebrate Valentine's Day💕">
+                <img src="img3.jpeg" alt="Beach">
+                <div class="caption">Celebrate Valentine's Day💕</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PHOTO LIGHTBOX MODAL -->
+    <div class="lightbox" id="photoLightbox">
+        <div class="lightbox-content">
+            <span class="lightbox-close" id="closeLightbox">&times;</span>
+            <img id="lightboxImg" src="" alt="Zoomed">
+            <div class="caption" id="lightboxCap"></div>
+        </div>
+    </div>
+
+    <!-- 6. MUSIC PLAYER SECTION -->
+    <section class="section">
+        <div class="player-card">
+            <div class="vinyl-container">
+                <div class="vinyl" id="vinylDisk">
+                    <div class="vinyl-center">🌼</div>
+                </div>
+            </div>
+            
+            <h3 class="track-title" id="currentTitle">Shape Of My Heart</h3>
+            <p class="track-artist" id="currentArtist">Backstreet Boys</p>
+
+            <div class="progress-container">
+                <span id="currentTime">0:00</span>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-current" id="progressCurrent"></div>
+                </div>
+                <span id="totalTime">0:00</span>
+            </div>
+
+            <div class="controls">
+                <button class="btn" id="btnPrev">⏮</button>
+                <button class="btn btn-play" id="btnPlay">▶</button>
+                <button class="btn" id="btnNext">⏭</button>
+            </div>
+
+            <div class="playlist">
+                <div class="playlist-item active" data-index="0" data-src="song1.mp3">
+                    <div class="item-info">
+                        <span class="item-name">Shape Of My Heart 🌸</span>
+                        <span class="item-artist">Backstreet Boys</span>
+                    </div>
+                    <span class="item-icon">🎵</span>
+                </div>
+                <div class="playlist-item" data-index="1" data-src="song2.mp3">
+                    <div class="item-info">
+                        <span class="item-name">Heaven</span>
+                        <span class="item-artist">Bryan Adams</span>
+                    </div>
+                    <span class="item-icon">🎵</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- JAVASCRIPT LOGIC --- */ -->
+    <script>
+        // --- DATA SONGS ---
+        const songs = [
+            { title: "Shape Of My Heart", artist: "Backstreet Boys", src: "song1.mp3" },
+            { title: "Heaven", artist: "Troye Sivan", src: "song2.mp3" }
+    
+        ];
+
+        let currentSongIndex = 0;
+        const audio = document.getElementById('mainAudio');
+        const btnPlay = document.getElementById('btnPlay');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const floatingBtn = document.getElementById('floatingBtn');
+        const vinylDisk = document.getElementById('vinylDisk');
+        const progressBar = document.getElementById('progressBar');
+        const progressCurrent = document.getElementById('progressCurrent');
+        const currentTimeEl = document.getElementById('currentTime');
+        const totalTimeEl = document.getElementById('totalTime');
+        const playlistItems = document.querySelectorAll('.playlist-item');
+
+        function loadSong(index) {
+            currentSongIndex = index;
+            audio.src = songs[index].src;
+            document.getElementById('currentTitle').textContent = songs[index].title;
+            document.getElementById('currentArtist').textContent = songs[index].artist;
+            
+            playlistItems.forEach(item => item.classList.remove('active'));
+            document.querySelector(`.playlist-item[data-index="${index}"]`).classList.add('active');
+        }
+        loadSong(0);
+
+        function playMusic() {
+            audio.play().then(() => {
+                btnPlay.textContent = "⏸";
+                floatingBtn.classList.add('playing');
+                vinylDisk.classList.add('playing');
+            }).catch(e => {
+                console.log("Auto-play diblokir browser, menunggu interaksi pengguna pertama.");
+            });
+        }
+
+        function togglePlay() {
+            if (audio.paused) {
+                playMusic();
+            } else {
+                audio.pause();
+                btnPlay.textContent = "▶";
+                floatingBtn.classList.remove('playing');
+                vinylDisk.classList.remove('playing');
+            }
+        }
+
+        // --- A. FUNGSI PRELOADER HILANG + AUTO PLAY LOGIC ---
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('preloader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                
+                // Coba putar otomatis langsung setelah loading hilang
+                playMusic();
+
+                // Solusi jitu bypass kebijakan browser: Jika autoplay gagal, 
+                // musik langsung berputar saat user menyentuh/klik apa saja di layar pertama kali.
+                document.body.addEventListener('click', () => {
+                    if (audio.paused && !floatingBtn.classList.contains('playing')) {
+                        playMusic();
+                    }
+                }, { once: true }); // "once: true" memastikan trigger ini hanya berjalan sekali klik saja.
+                
+            }, 1500);
+        });
+        
+
+        // --- B. LOGIKA BUNGA BERGUGURAN (BACKGROUND) ---
+        const petalEmojis = ['🌸', '✨', '🌼', '🌹', '💖', '🌷'];
+        function createFallingPetal() {
+            const petal = document.createElement('div');
+            petal.classList.add('falling-petal');
+            petal.innerText = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.fontSize = Math.random() * 0.8 + 0.8 + 'rem';
+            const duration = Math.random() * 5 + 6;
+            petal.style.animationDuration = duration + 's';
+            petal.style.opacity = Math.random() * 0.5 + 0.3;
+            document.body.appendChild(petal);
+            setTimeout(() => { petal.remove(); }, duration * 1000);
+        }
+        setInterval(createFallingPetal, 450);
+
+        // --- C. LOGIKA INTERAKTIF DIGITAL BOUQUET ---
+        const flowers = document.querySelectorAll('.interactive-flower');
+        const msgText = document.getElementById('msgText');
+        flowers.forEach(flower => {
+            flower.addEventListener('click', () => {
+                const message = flower.getAttribute('data-msg');
+                msgText.style.opacity = 0;
+                setTimeout(() => {
+                    msgText.textContent = message;
+                    msgText.style.opacity = 1;
+                }, 200);
+            });
+        });
+
+        // --- D. LOGIKA PHOTO LIGHTBOX POPUP ---
+        const polaroids = document.querySelectorAll('.polaroid');
+        const lightbox = document.getElementById('photoLightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxCap = document.getElementById('lightboxCap');
+        const closeLightbox = document.getElementById('closeLightbox');
+
+        polaroids.forEach(card => {
+            card.addEventListener('click', () => {
+                const bigImg = card.getAttribute('data-img');
+                const caption = card.getAttribute('data-cap');
+                lightboxImg.src = bigImg;
+                lightboxCap.textContent = caption;
+                lightbox.classList.add('active');
+            });
+        });
+        closeLightbox.addEventListener('click', () => lightbox.classList.remove('active'));
+        lightbox.addEventListener('click', (e) => {
+            if(e.target === lightbox) lightbox.classList.remove('active');
+        });
+
+        // --- E. CONTROLS & SYNCHRONIZATION ---
+        btnPlay.addEventListener('click', togglePlay);
+        floatingBtn.addEventListener('click', togglePlay);
+
+        btnNext.addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+            playMusic();
+        });
+
+        btnPrev.addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            loadSong(currentSongIndex);
+            playMusic();
+        });
+
+        playlistItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const idx = parseInt(item.getAttribute('data-index'));
+                loadSong(idx);
+                playMusic();
+            });
+        });
+
+        function formatTime(secs) {
+            let min = Math.floor(secs / 60);
+            let sec = Math.floor(secs % 60);
+            if (sec < 10) sec = `0${sec}`;
+            return `${min}:${sec}`;
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            const { duration, currentTime } = audio;
+            if (duration) {
+                const progressPercent = (currentTime / duration) * 100;
+                progressCurrent.style.width = `${progressPercent}%`;
+                currentTimeEl.textContent = formatTime(currentTime);
+                totalTimeEl.textContent = formatTime(duration);
+            }
+        });
+
+        progressBar.addEventListener('click', (e) => {
+            const width = progressBar.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+            if(duration) {
+                audio.currentTime = (clickX / width) * duration;
+            }
+        });
+
+        audio.addEventListener('ended', () => {
+            btnNext.click();
+        });
+    </script>
+</body>
+</html>
